@@ -1,20 +1,22 @@
+const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
-const http = require('http');
-const PORT = process.env.PORT || 5001;
+const cors = require('cors');
+const PORT = process.env.PORT || 8080;
+//const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
 
-const router = require ('./router');
+const router = require('./router');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server);
+const io = socketio(server,{ cors: { origin: '*' } });
+app.use(cors());
+app.use(router);
 
-io.on('connection',(socket)=>{
-    console.log("we have a connection");
-    socket.on('disconnect',()=>{
-        console.log("User has left");
-    })
-})
+io.on("connection", (socket) => {
+  
 
-app.use(router)
-server.listen(PORT,()=> console.log(`server has started on port ${PORT}`));
+  console.log(socket);
+});
+
+server.listen(PORT, () => console.log(`Server has started on ${PORT}`));
